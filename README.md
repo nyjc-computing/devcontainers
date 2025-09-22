@@ -1,5 +1,7 @@
 # Devcontainers Repository
 
+> **Note:** All base images must be [Codespace-compatible](https://containers.dev/implementors/) to ensure Docker and devcontainer features work as expected in Codespaces and local development environments.
+
 This repository hosts multiple devcontainer builds, each organized in its own subdirectory. These builds are published to **GitHub Container Registry (GHCR)** and can be consumed by downstream projects.
 
 ## Directory Structure

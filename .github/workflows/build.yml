@@ -17,6 +17,13 @@ jobs:
     strategy:
       matrix:
         subdir: [9569, tnl, nysd]
+        include:
+          - subdir: 9569
+            path: '9569/**'
+          - subdir: nysd
+            path: 'nysd/**'
+          - subdir: tnl
+            path: 'tnl/**'
 
     steps:
     - name: Checkout repository
@@ -32,17 +39,8 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Build and push Docker image
-      if: contains(github.event.head_commit.message, matrix.subdir)
-      uses: docker/build-push-action@v4
-      with:
-        context: ./
-        file: ${{ matrix.subdir }}/Dockerfile
-        push: true
-        tags: |
-          ghcr.io/nyjc-computing/devcontainer-${{ matrix.subdir }}:latest
-          ghcr.io/nyjc-computing/devcontainer-${{ matrix.subdir }}:${{ github.run_id }}
-
-    - name: Cleanup old images
+    - name: Run build script
+      if: ${{ contains(github.event.head_commit.message, matrix.subdir) || github.event_name == 'workflow_dispatch' }}
       run: |
-        echo "Retention policy enforcement script here"
+        chmod +x ./build.sh
+        ./build.sh ${{ matrix.subdir }}
